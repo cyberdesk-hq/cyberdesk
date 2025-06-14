@@ -14,6 +14,8 @@ const app = newApp();
 
 app.route("/v1/", desktop);
 
+app.get("/health", (c) => c.json({ status: "ok" }));
+
 // Use PORT environment variable with fallback to 3000 for local development
 const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 

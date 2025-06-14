@@ -1,12 +1,14 @@
+# Use Python 3.12 as the base image
 FROM python:3.12
 
+# Set the working directory
 WORKDIR /app
 
-# Copy requirements first for layer caching
-COPY requirements.txt /app/
+# Copy all files from the current directory to the container
+COPY . .
+
+# Install required packages
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code
-COPY handlers/controller.py /app/
-
-CMD kopf run /app/controller.py --liveness=http://0.0.0.0:8080/healthz --all-namespaces
+# Run the Docker-specific controller
+CMD ["python", "handlers/docker_controller.py"]
