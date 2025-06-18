@@ -21,18 +21,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
-      - name: Debug folder
+          node-version: 20  # removed cache
+      - name: Check project files
         run: |
           pwd
           ls -la
-      - name: Skip if no package.json
-        run: |
-          if [ ! -f package.json ]; then
-            echo "No package.json found. Skipping."
-            exit 0
-          fi
+          if [ ! -f package.json ]; then echo "❌ No package.json, skipping..."; exit 0; fi
       - run: npm install
       - name: Run Linter
         run: npm run lint || true
