@@ -23,6 +23,16 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
+      - name: Debug folder
+        run: |
+          pwd
+          ls -la
+      - name: Skip if no package.json
+        run: |
+          if [ ! -f package.json ]; then
+            echo "No package.json found. Skipping."
+            exit 0
+          fi
       - run: npm install
       - name: Run Linter
         run: npm run lint || true
