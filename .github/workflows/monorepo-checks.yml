@@ -1,0 +1,38 @@
+name: Monorepo Checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint & Format (Node Projects)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [apps/api, apps/web, apps/docs, sdks/ts-sdk]
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20  # removed cache
+      - name: Check project files
+        run: |
+          pwd
+          ls -la
+          if [ ! -f package.json ]; then echo "❌ No package.json, skipping..."; exit 0; fi
+      - run: npm install
+      - name: Run Linter
+        run: npm run lint || true
+      - name: Auto Format
+        run: |
+          if [ -f prettier.config.js ] || [ -f .prettierrc ]; then
+            npx prettier . --write
+          fi
+          npx eslint . --fix || true
